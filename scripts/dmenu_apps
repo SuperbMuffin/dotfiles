@@ -1,0 +1,28 @@
+#!/bin/sh
+# Minimal replacement for dmenu_run
+# Lists all executables in PATH and lets you pick one with dmenu
+
+# Directories to scan for executables
+PATHS="/usr/local/sbin /usr/local/bin /usr/bin /bin $HOME/.local/bin /var/lib/flatpak/exports/bin $HOME/.local/share/flatpak/exports/bin"
+
+
+# Gather commands
+COMMANDS=$(for dir in $PATHS; do
+    [ -d "$dir" ] && find "$dir" -maxdepth 1 -type f -executable -printf "%f\n"
+done | sort -u)
+# Add a manual entry for Nuclear Flatpak
+COMMANDS="$COMMANDS
+nuclear
+tor"
+
+# Launch dmenu with all flags passed to this script
+CHOICE=$(echo "$COMMANDS" | dmenu "$@" -i -p "Run:") || exit
+
+# Execute the chosen command
+if [ "$CHOICE" = "nuclear" ]; then
+    setsid flatpak run org.js.nuclear.Nuclear >/dev/null 2>&1 &
+elif [ "$CHOICE" = "tor" ]; then
+    setsid "$HOME/Downloads/APPS/tor-browser/Browser/start-tor-browser" >/dev/null 2>&1 &
+else
+    setsid "$CHOICE" >/dev/null 2>&1 &
+fi
