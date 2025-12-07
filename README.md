@@ -25,7 +25,8 @@ Install the following before building or running:
 - **Feh** (Background Manager)
 - **Git** (For Cloning)
 - **Pipewire** (Audio Server)
-For build dependencies run: ```bash 
+For build dependencies run: 
+```bash 
 sudo pacman -S base-devel libx11 libxft libxinerama
 ```
 ## Installation
